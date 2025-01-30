@@ -1,19 +1,19 @@
 package com.zup.ecommerce.models;
 
-public class Customers {
+public class Customer {
     private Long id;
     private String name;
     private String cpf;
     private String email;
 
-    public Customers(Long id, String name, String cpf, String email) {
+    public Customer(Long id, String name, String cpf, String email) {
         this.id = id;
         this.name = name;
         this.cpf = cpf;
         this.email = email;
     }
 
-    public Customers(){
+    public Customer(){
 
     }
 
