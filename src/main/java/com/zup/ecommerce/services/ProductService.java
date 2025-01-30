@@ -4,7 +4,9 @@ import com.zup.ecommerce.models.Product;
 import com.zup.ecommerce.repository.ProductRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProductService {
     private ProductRepository productRepository;
 
