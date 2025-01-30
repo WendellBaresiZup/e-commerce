@@ -6,6 +6,17 @@ public class Customers {
     private String cpf;
     private String email;
 
+    public Customers(Long id, String name, String cpf, String email) {
+        this.id = id;
+        this.name = name;
+        this.cpf = cpf;
+        this.email = email;
+    }
+
+    public Customers(){
+
+    }
+
     public Long getId() {
         return id;
     }
