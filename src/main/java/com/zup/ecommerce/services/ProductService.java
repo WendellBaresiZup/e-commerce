@@ -27,5 +27,4 @@ public class ProductService {
         return productRepository.findAll().stream().map(product -> new Product(product.getId(), product.getName(), product.getPrice(), product.getQuantity() )).collect(Collectors.toList());
     }
 
-
 }
