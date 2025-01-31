@@ -44,4 +44,10 @@ public class ProductService {
         Map<String, Object> bodyProduct = Map.of("Message", "Product Update Successfully", "New Product Data",new Product(saveProduct.getId(),saveProduct.getName(), saveProduct.getPrice(), saveProduct.getQuantity()));
         return ResponseEntity.status(HttpStatus.OK).body(bodyProduct);
     }
+
+    public ResponseEntity<Map<String, String>> deleteProduct(Long id){
+        productRepository.deleteById(id);
+        Map<String, String> body = Map.of("Message", "Product Deleted Successfully");
+        return ResponseEntity.status(HttpStatus.OK).body(body);
+    }
 }
