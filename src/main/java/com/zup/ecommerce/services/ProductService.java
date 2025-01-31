@@ -27,4 +27,8 @@ public class ProductService {
         return productRepository.findAll().stream().map(product -> new Product(product.getId(), product.getName(), product.getPrice(), product.getQuantity() )).collect(Collectors.toList());
     }
 
+    public Product getProductById(Long id){
+        Product search = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        return new Product(search.getId(), search.getName(), search.getPrice(), search.getQuantity());
+    }
 }
