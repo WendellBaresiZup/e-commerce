@@ -16,7 +16,6 @@ public class ProductController {
         this.service = service;
     }
 
-
     @PostMapping
     public ResponseEntity<Object> createProduct(@RequestBody Product product){
         ResponseEntity<Object> productCreated = service.createProduct(product);
@@ -28,4 +27,8 @@ public class ProductController {
         return ResponseEntity.ok(service.getAllProducts());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getById(@PathVariable Long id){
+        return ResponseEntity.ok(service.getProductById(id));
+    }
 }
