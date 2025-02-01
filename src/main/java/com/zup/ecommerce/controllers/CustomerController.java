@@ -3,11 +3,14 @@ package com.zup.ecommerce.controllers;
 import com.zup.ecommerce.models.Customer;
 import com.zup.ecommerce.services.CustomerService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
+@RestController
+@RequestMapping("/api/customer")
 public class CustomerController {
 
     private final CustomerService service;
@@ -20,5 +23,20 @@ public class CustomerController {
     public ResponseEntity <Map<String,Object>> createCustomer(@RequestBody Customer customer){
         ResponseEntity<Map<String, Object>> customerCreated = service.createCustomer(customer);
         return ResponseEntity.status(customerCreated.getStatusCode()).body(customerCreated.getBody());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAllCustomers(){
+        return ResponseEntity.ok(service.getAllCustomers());
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Map<String, Object>> updateCustomer(@PathVariable(value = "id") Long id, @RequestBody Customer customerUpdate){
+        try{
+            ResponseEntity<Map<String, Object>> updated = service.updateCustomer(id, customerUpdate);
+            return updated;
+        } catch (RuntimeException e){
+            return ResponseEntity.notFound().build();
+        }
     }
 }
