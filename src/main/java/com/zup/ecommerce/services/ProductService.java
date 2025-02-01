@@ -22,6 +22,15 @@ public class ProductService {
     }
 
     public ResponseEntity<Object> createProduct(Product product){
+        if (!validateName().test(product)){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("The Product name already Existis!");
+        }
+        if (!validatePrice().test(product)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The Product price must be greater than 0!");
+        }
+        if (!validateQuantity().test(product)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The Quantity in stock must be greater than or equal to 0!");
+        }
         Product createProduct = productRepository.save(product);
         return ResponseEntity.status(HttpStatus.CREATED).body("The Product was created with successfully!!");
     }
