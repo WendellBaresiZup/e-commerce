@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -38,4 +40,20 @@ public class ProductService {
         Map<String, String> body = Map.of("Message", "Product Deleted Successfully");
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
+
+    public Predicate<Product> validateName(){
+        return product -> {
+            Optional<Product> existingProduct = productRepository.findByName(product.getName());
+            return existingProduct.isEmpty();
+        };
+    }
+
+    public Predicate<Product> validatePrice(){
+        return product -> product.getPrice() > 0;
+    }
+
+    public Predicate<Product> validateQuantity(){
+        return product -> product.getQuantity() >= 0;
+    }
+
 }
