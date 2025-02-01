@@ -38,14 +38,24 @@ public class CustomerService {
     }
 
     public ResponseEntity<Map<String, Object>> updateCustomer(Long id, Customer customerUpdate){
-        Customer existingCustomer = repository.findById(id).orElseThrow(()-> new RuntimeException("Customer with ID " + id + " not found."));
-        existingCustomer.setName(customerUpdate.getName());
-        existingCustomer.setCpf(customerUpdate.getCpf());
-        existingCustomer.setEmail(customerUpdate.getEmail());
+        try {
+            Customer existingCustomer = repository.findById(id).orElseThrow(()-> new RuntimeException("Customer with ID " + id + " not found."));
+            validateCustomerName(customerUpdate.getName());
+            validateCustomerCpf(customerUpdate.getCpf());
+            validateCustomerEmail(customerUpdate.getEmail());
 
-        Customer saveCustomer = repository.save(existingCustomer);
-        Map<String, Object> bodyCustomer = Map.of("Message", "Customer Update Sucessfully", "New Customer Data", new Customer(saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail()));
-        return ResponseEntity.status(HttpStatus.OK).body(bodyCustomer);
+            existingCustomer.setName(customerUpdate.getName());
+            existingCustomer.setCpf(customerUpdate.getCpf());
+            existingCustomer.setEmail(customerUpdate.getEmail());
+
+            Customer saveCustomer = repository.save(existingCustomer);
+            Map<String, Object> bodyCustomer = Map.of("Message", "Customer Update Sucessfully", "New Customer Data", new Customer(saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail()));
+            return ResponseEntity.status(HttpStatus.OK).body(bodyCustomer);
+        } catch (IllegalArgumentException e){
+            Map<String, Object> errorBody = Map.of("Error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
+        }
+
     }
 
 
