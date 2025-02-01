@@ -29,4 +29,15 @@ public class CustomerService {
         return repository.findAll().stream().map(customer -> new Customer(customer.getId(), customer.getName(), customer.getCpf(), customer.getEmail())).collect(Collectors.toList());
     }
 
+    public ResponseEntity<Map<String, Object>> updateProduct(Long id, Customer customerUpdate){
+        Customer existingCustomer = repository.findById(id).orElseThrow(()-> new RuntimeException("Customer with ID " + id + " not found."));
+        existingCustomer.setName(customerUpdate.getName());
+        existingCustomer.setCpf(customerUpdate.getCpf());
+        existingCustomer.setEmail(customerUpdate.getEmail());
+
+        Customer saveCustomer = repository.save(existingCustomer);
+        Map<String, Object> bodyCustomer = Map.of("Message", "Customer Update Sucessfully", "New Customer Data", new Customer(saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail()));
+        return ResponseEntity.status(HttpStatus.OK).body(bodyCustomer);
+    }
+
 }
