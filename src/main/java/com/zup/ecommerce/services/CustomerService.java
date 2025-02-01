@@ -21,10 +21,16 @@ public class CustomerService {
     }
 
     public ResponseEntity<Map<String,Object>> createCustomer(Customer customer){
-        Customer created = new Customer(null, customer.getName(), customer.getCpf(), customer.getEmail());
-        Customer saveCustomer = repository.save(created);
-        Map<String, Object> bodyCustomer = Map.of("Message", "Customer Created Successfully", "Customer Data", new Customer(saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(bodyCustomer);
+        try {
+            validateCustomer(customer);
+            Customer created = new Customer(null, customer.getName(), customer.getCpf(), customer.getEmail());
+            Customer saveCustomer = repository.save(created);
+            Map<String, Object> bodyCustomer = Map.of("Message", "Customer Created Successfully", "Customer Data", new Customer(saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail()));
+            return ResponseEntity.status(HttpStatus.CREATED).body(bodyCustomer);
+        }catch (IllegalArgumentException e){
+            Map<String, Object> errorBody = Map.of("Error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
+        }
     }
 
     public List<Customer> getAllCustomers(){
