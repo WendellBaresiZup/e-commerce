@@ -22,4 +22,6 @@ public class CustomerService {
         Map<String, Object> bodyCustomer = Map.of("Message", "Customer Created Successfully", "Customer Data", new Customer(saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail()));
         return ResponseEntity.status(HttpStatus.CREATED).body(bodyCustomer);
     }
+
+
 }
