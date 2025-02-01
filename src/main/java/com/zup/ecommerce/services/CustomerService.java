@@ -6,7 +6,9 @@ import com.zup.ecommerce.repository.CustomerRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CustomerService {
 
@@ -23,5 +25,8 @@ public class CustomerService {
         return ResponseEntity.status(HttpStatus.CREATED).body(bodyCustomer);
     }
 
+    public List<Customer> getAllCustomers(){
+        return repository.findAll().stream().map(customer -> new Customer(customer.getId(), customer.getName(), customer.getCpf(), customer.getEmail())).collect(Collectors.toList());
+    }
 
 }
