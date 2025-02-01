@@ -33,18 +33,6 @@ public class ProductService {
         return new Product(search.getId(), search.getName(), search.getPrice(), search.getQuantity());
     }
 
-    public ResponseEntity<Map<String, Object>> updateProduct(Long id, Product updateProduct){
-        Product existingProduct = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product with id " + id + " not found"));
-
-        existingProduct.setName(updateProduct.getName());
-        existingProduct.setPrice(updateProduct.getPrice());
-        existingProduct.setQuantity(updateProduct.getQuantity());
-
-        Product saveProduct = productRepository.save(existingProduct);
-        Map<String, Object> bodyProduct = Map.of("Message", "Product Update Successfully", "New Product Data",new Product(saveProduct.getId(),saveProduct.getName(), saveProduct.getPrice(), saveProduct.getQuantity()));
-        return ResponseEntity.status(HttpStatus.OK).body(bodyProduct);
-    }
-
     public ResponseEntity<Map<String, String>> deleteProduct(Long id){
         productRepository.deleteById(id);
         Map<String, String> body = Map.of("Message", "Product Deleted Successfully");
