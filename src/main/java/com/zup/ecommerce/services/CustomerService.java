@@ -58,7 +58,6 @@ public class CustomerService {
 
     }
 
-
     private void validateCustomerName(String name){
         if (name == null || name.isEmpty()){
             throw new IllegalArgumentException("The Customer name cannot be empty!");
