@@ -17,7 +17,6 @@ public class Buy {
     Product product;
 
     public Buy(){
-
     }
 
     public Buy(Long id, Customer customer, Product product) {
