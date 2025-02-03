@@ -1,6 +1,7 @@
 package com.zup.ecommerce.dtos;
 
 public class CustomerResponseDTO {
+    private String message;
     private Long id;
     private String name;
     private String cpf;
@@ -9,11 +10,20 @@ public class CustomerResponseDTO {
     public CustomerResponseDTO() {
     }
 
-    public CustomerResponseDTO(Long id, String name, String cpf, String email) {
+    public CustomerResponseDTO(String message, Long id, String name, String cpf, String email) {
+        this.message = message;
         this.id = id;
         this.name = name;
         this.cpf = cpf;
         this.email = email;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Long getId() {
