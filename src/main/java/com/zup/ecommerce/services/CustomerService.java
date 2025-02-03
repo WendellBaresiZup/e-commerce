@@ -40,23 +40,22 @@ public class CustomerService {
                 .collect(Collectors.toList());
     }
 
-    public ResponseEntity<Map<String, Object>> updateCustomer(Long id, Customer customerUpdate){
+    public ResponseEntity<CustomerResponseDTO> updateCustomer(Long id, CustomerRequestDTO customerRequest){
         try {
             Customer existingCustomer = repository.findById(id).orElseThrow(()-> new RuntimeException("Customer with ID " + id + " not found."));
-            validateCustomerName(customerUpdate.getName());
-            validateCustomerCpf(customerUpdate.getCpf());
-            validateCustomerEmail(customerUpdate.getEmail());
+            validateCustomerName(customerRequest.getName());
+            validateCustomerCpf(customerRequest.getCpf());
+            validateCustomerEmail(customerRequest.getEmail());
 
-            existingCustomer.setName(customerUpdate.getName());
-            existingCustomer.setCpf(customerUpdate.getCpf());
-            existingCustomer.setEmail(customerUpdate.getEmail());
+            existingCustomer.setName(customerRequest.getName());
+            existingCustomer.setCpf(customerRequest.getCpf());
+            existingCustomer.setEmail(customerRequest.getEmail());
 
             Customer saveCustomer = repository.save(existingCustomer);
-            Map<String, Object> bodyCustomer = Map.of("Message", "Customer Update Sucessfully", "New Customer Data", new Customer(saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail()));
+            CustomerResponseDTO bodyCustomer = new CustomerResponseDTO ("Customer Update Sucessfully",saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail());
             return ResponseEntity.status(HttpStatus.OK).body(bodyCustomer);
         } catch (IllegalArgumentException e){
-            Map<String, Object> errorBody = Map.of("Error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
     }
