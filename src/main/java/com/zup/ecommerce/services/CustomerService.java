@@ -1,5 +1,7 @@
 package com.zup.ecommerce.services;
 
+import com.zup.ecommerce.dtos.CustomerRequestDTO;
+import com.zup.ecommerce.dtos.CustomerResponseDTO;
 import com.zup.ecommerce.models.Customer;
 import com.zup.ecommerce.models.Product;
 import com.zup.ecommerce.repository.CustomerRepository;
@@ -20,16 +22,15 @@ public class CustomerService {
         this.repository = repository;
     }
 
-    public ResponseEntity<Map<String,Object>> createCustomer(Customer customer){
+    public ResponseEntity<CustomerResponseDTO> createCustomer(CustomerRequestDTO customerRequest){
         try {
+            Customer customer = new Customer(null, customerRequest.getName(), customerRequest.getCpf(), customerRequest.getEmail());
             validateCustomer(customer);
-            Customer created = new Customer(null, customer.getName(), customer.getCpf(), customer.getEmail());
-            Customer saveCustomer = repository.save(created);
-            Map<String, Object> bodyCustomer = Map.of("Message", "Customer Created Successfully", "Customer Data", new Customer(saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail()));
+            Customer saveCustomer = repository.save(customer);
+            CustomerResponseDTO bodyCustomer = new CustomerResponseDTO ("Customer Create succesfully!",saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(bodyCustomer);
         }catch (IllegalArgumentException e){
-            Map<String, Object> errorBody = Map.of("Error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
