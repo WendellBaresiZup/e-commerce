@@ -1,5 +1,7 @@
 package com.zup.ecommerce.controllers;
 
+import com.zup.ecommerce.dtos.BuyRequestDTO;
+import com.zup.ecommerce.dtos.BuyResponseDTO;
 import com.zup.ecommerce.services.BuyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +21,7 @@ public class BuyController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, Object>> buyProduct(@RequestBody Map<String, Object> buyRequest){
+    public ResponseEntity<BuyResponseDTO> buyProduct(@RequestBody BuyRequestDTO buyRequest){
         return buyservice.buyProduct(buyRequest);
     }
 }
