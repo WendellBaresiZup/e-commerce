@@ -34,8 +34,10 @@ public class CustomerService {
         }
     }
 
-    public List<Customer> getAllCustomers(){
-        return repository.findAll().stream().map(customer -> new Customer(customer.getId(), customer.getName(), customer.getCpf(), customer.getEmail())).collect(Collectors.toList());
+    public List<CustomerResponseDTO> getAllCustomers(){
+        return repository.findAll().stream()
+                .map(customer -> new CustomerResponseDTO("All Customer Data!!",customer.getId(), customer.getName(), customer.getCpf(), customer.getEmail()))
+                .collect(Collectors.toList());
     }
 
     public ResponseEntity<Map<String, Object>> updateCustomer(Long id, Customer customerUpdate){
