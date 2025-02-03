@@ -1,5 +1,9 @@
 package com.zup.ecommerce.services;
 
+import com.zup.ecommerce.dtos.BuyRequestDTO;
+import com.zup.ecommerce.dtos.BuyResponseDTO;
+import com.zup.ecommerce.dtos.ProductRequestDTO;
+import com.zup.ecommerce.dtos.ProductResponseDTO;
 import com.zup.ecommerce.models.Buy;
 import com.zup.ecommerce.models.Customer;
 import com.zup.ecommerce.models.Product;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class BuyService {
@@ -27,38 +32,40 @@ public class BuyService {
         this.customerRepository = customerRepository;
     }
 
-    public ResponseEntity<Map<String, Object>> buyProduct(Map<String, Object> buyRequest){
+    public ResponseEntity<BuyResponseDTO> buyProduct(BuyRequestDTO buyRequest){
         try {
-            String cpf = (String) buyRequest.get("cpf");
-            List<Map<String, String>> produtos = (List<Map<String, String>>) buyRequest.get("Products");
-            if (produtos == null || produtos.isEmpty()){
+            String cpf = buyRequest.getCpf();
+            List<ProductRequestDTO> products = buyRequest.getProducts();
+            if (products == null || products.isEmpty()){
                 throw new IllegalArgumentException("The Product list cannot be null or empty!");
             }
 
             Customer customer = customerRepository.findByCpf(cpf).orElseThrow(() -> new IllegalArgumentException("Customer not found with CPF: " + cpf));
 
-            for (Map<String,String> produto : produtos) {
-                String productName = produto.get("Name");
-                Product product = productRepository.findByName(productName).orElseThrow(() -> new IllegalArgumentException("Product not found: " + productName));
+            List<ProductResponseDTO> productResponses = products.stream().
+                    map(productRequest -> {
+                        String productName = productRequest.getName();
+                        Product product = productRepository.findByName(productName).orElseThrow(() -> new IllegalArgumentException("Product not found: " + productName));
 
-                if (product.getQuantity() <= 0){
-                    throw new IllegalArgumentException("Product out of stock: " + productName);
-                }
+                        if (product.getQuantity() <= 0){
+                            throw new IllegalArgumentException("Product out of stock: " + productName);
+                        }
 
-                product.setQuantity(product.getQuantity() - 1);
-                productRepository.save(product);
+                        product.setQuantity(product.getQuantity() - 1);
+                        productRepository.save(product);
 
-                Buy buy = new Buy(null, customer, product);
-                repository.save(buy);
-            }
+                        Buy buy = new Buy(null, customer, product);
+                        repository.save(buy);
 
-            Map<String, Object> body = Map.of("Message", "Buy Completed Successfully");
-            return ResponseEntity.status(HttpStatus.OK).body(body);
+                        return new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getQuantity());
+                    })
+                    .collect(Collectors.toList());
+
+            BuyResponseDTO responseDTO = new BuyResponseDTO("Buy Completed Successfully", productResponses);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
         } catch (IllegalArgumentException e){
-            Map<String, Object> errorBody = Map.of("Error", e.getMessage());
+            BuyResponseDTO errorBody = new BuyResponseDTO(e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
         }
     }
-
-
 }
