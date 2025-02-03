@@ -1,5 +1,7 @@
 package com.zup.ecommerce.controllers;
 
+import com.zup.ecommerce.dtos.CustomerRequestDTO;
+import com.zup.ecommerce.dtos.CustomerResponseDTO;
 import com.zup.ecommerce.models.Customer;
 import com.zup.ecommerce.services.CustomerService;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,8 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity <Map<String,Object>> createCustomer(@RequestBody Customer customer){
-        ResponseEntity<Map<String, Object>> customerCreated = service.createCustomer(customer);
-        return ResponseEntity.status(customerCreated.getStatusCode()).body(customerCreated.getBody());
+    public ResponseEntity <CustomerResponseDTO> createCustomer(@RequestBody CustomerRequestDTO customerRequest){
+        return service.createCustomer(customerRequest);
     }
 
     @GetMapping
