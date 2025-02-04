@@ -32,9 +32,9 @@ public class CustomerController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Map<String, Object>> updateCustomer(@PathVariable(value = "id") Long id, @RequestBody Customer customerUpdate){
+    public ResponseEntity<CustomerResponseDTO> updateCustomer(@PathVariable(value = "id") Long id, @RequestBody CustomerRequestDTO customerRequest){
         try{
-            ResponseEntity<Map<String, Object>> updated = service.updateCustomer(id, customerUpdate);
+            ResponseEntity<CustomerResponseDTO> updated = service.updateCustomer(id, customerRequest);
             return updated;
         } catch (RuntimeException e){
             return ResponseEntity.notFound().build();
