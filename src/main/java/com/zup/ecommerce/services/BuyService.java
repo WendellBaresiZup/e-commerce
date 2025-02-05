@@ -4,6 +4,8 @@ import com.zup.ecommerce.dtos.BuyRequestDTO;
 import com.zup.ecommerce.dtos.BuyResponseDTO;
 import com.zup.ecommerce.dtos.ProductRequestDTO;
 import com.zup.ecommerce.dtos.ProductResponseDTO;
+import com.zup.ecommerce.exceptions.BuyInvalidException;
+import com.zup.ecommerce.exceptions.BuyNotFoundException;
 import com.zup.ecommerce.models.Buy;
 import com.zup.ecommerce.models.Customer;
 import com.zup.ecommerce.models.Product;
@@ -37,18 +39,18 @@ public class BuyService {
             String cpf = buyRequest.getCpf();
             List<ProductRequestDTO> products = buyRequest.getProducts();
             if (products == null || products.isEmpty()){
-                throw new IllegalArgumentException("The Product list cannot be null or empty!");
+                throw new BuyInvalidException("The Product list cannot be null or empty!");
             }
 
-            Customer customer = customerRepository.findByCpf(cpf).orElseThrow(() -> new IllegalArgumentException("Customer not found with CPF: " + cpf));
+            Customer customer = customerRepository.findByCpf(cpf).orElseThrow(() -> new BuyNotFoundException("Customer not found with CPF: " + cpf));
 
             List<ProductResponseDTO> productResponses = products.stream().
                     map(productRequest -> {
                         String productName = productRequest.getName();
-                        Product product = productRepository.findByName(productName).orElseThrow(() -> new IllegalArgumentException("Product not found: " + productName));
+                        Product product = productRepository.findByName(productName).orElseThrow(() -> new BuyNotFoundException("Product not found: " + productName));
 
                         if (product.getQuantity() <= 0){
-                            throw new IllegalArgumentException("Product out of stock: " + productName);
+                            throw new BuyInvalidException("Product out of stock: " + productName);
                         }
 
                         product.setQuantity(product.getQuantity() - 1);
@@ -61,8 +63,7 @@ public class BuyService {
                     })
                     .collect(Collectors.toList());
 
-            BuyResponseDTO responseDTO = new BuyResponseDTO("Buy Completed Successfully", productResponses);
-            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (IllegalArgumentException e){
             BuyResponseDTO errorBody = new BuyResponseDTO(e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
