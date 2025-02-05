@@ -1,7 +1,9 @@
 package com.zup.ecommerce.services;
 
 import com.zup.ecommerce.dtos.ProductRequestDTO;
+import com.zup.ecommerce.dtos.ProductResponseDTO;
 import com.zup.ecommerce.exceptions.ProductInvalidException;
+import com.zup.ecommerce.exceptions.ProductNotFoundException;
 import com.zup.ecommerce.models.Product;
 import com.zup.ecommerce.repository.ProductRepository;
 import org.springframework.http.HttpStatus;
@@ -23,18 +25,20 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ResponseEntity<Object> createProduct(Product product){
-        if (!validateName().test(product)){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("The Product name already Existis!");
+    public ResponseEntity<ProductResponseDTO> createProduct(ProductRequestDTO productRequest){
+        try {
+            validateProductName(productRequest);
+            validateProductPrice(productRequest);
+            validateProductQuantity(productRequest);
+
+            Product product = new Product(null, productRequest.getName(), productRequest.getPrice(), productRequest.getQuantity());
+            Product createProduct = productRepository.save(product);
+
+            ProductResponseDTO productResponse = new ProductResponseDTO(createProduct.getId(), createProduct.getName(), createProduct.getPrice(), createProduct.getQuantity());
+            return ResponseEntity.status(HttpStatus.CREATED).body(productResponse);
+        } catch (ProductInvalidException | ProductNotFoundException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        if (!validatePrice().test(product)){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The Product price must be greater than 0!");
-        }
-        if (!validateQuantity().test(product)){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The Quantity in stock must be greater than or equal to 0!");
-        }
-        Product createProduct = productRepository.save(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body("The Product was created with successfully!!");
     }
 
     public List<Product> getAllProducts(){
@@ -52,20 +56,20 @@ public class ProductService {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    public void validateName(ProductRequestDTO productRequest){
+    public void validateProductName(ProductRequestDTO productRequest){
             Optional<Product> existingProduct = productRepository.findByName(productRequest.getName());
             if (existingProduct.isPresent()){
                 throw new ProductInvalidException("The Product name already exists!");
         }
     }
 
-    public void validatePrice(ProductRequestDTO productRequest){
+    public void validateProductPrice(ProductRequestDTO productRequest){
         if (productRequest.getPrice() <= 0) {
             throw new ProductInvalidException("The Product price must be greater than 0!");
         }
     }
 
-    public void validateQuantity(ProductRequestDTO productRequest){
+    public void validateProductQuantity(ProductRequestDTO productRequest){
         if (productRequest.getQuantity() < 0){
             throw new ProductInvalidException("The Quantity in stock must be greater than 0!!");
         }
