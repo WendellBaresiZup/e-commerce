@@ -50,9 +50,9 @@ public class ProductService {
                 .map(product -> new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getQuantity() )).collect(Collectors.toList());
     }
 
-    public Product getProductById(Long id){
+    public ProductResponseDTO getProductById(Long id){
         Product search = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-        return new Product(search.getId(), search.getName(), search.getPrice(), search.getQuantity());
+        return new ProductResponseDTO(search.getId(), search.getName(), search.getPrice(), search.getQuantity());
     }
 
     public ResponseEntity<Map<String, String>> deleteProduct(Long id){
