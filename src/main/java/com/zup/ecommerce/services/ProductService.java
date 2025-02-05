@@ -1,5 +1,7 @@
 package com.zup.ecommerce.services;
 
+import com.zup.ecommerce.dtos.ProductRequestDTO;
+import com.zup.ecommerce.exceptions.ProductInvalidException;
 import com.zup.ecommerce.models.Product;
 import com.zup.ecommerce.repository.ProductRepository;
 import org.springframework.http.HttpStatus;
@@ -50,19 +52,23 @@ public class ProductService {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    public Predicate<Product> validateName(){
-        return product -> {
-            Optional<Product> existingProduct = productRepository.findByName(product.getName());
-            return existingProduct.isEmpty();
-        };
+    public void validateName(ProductRequestDTO productRequest){
+            Optional<Product> existingProduct = productRepository.findByName(productRequest.getName());
+            if (existingProduct.isPresent()){
+                throw new ProductInvalidException("The Product name already exists!");
+        }
     }
 
-    public Predicate<Product> validatePrice(){
-        return product -> product.getPrice() > 0;
+    public void validatePrice(ProductRequestDTO productRequest){
+        if (productRequest.getPrice() <= 0) {
+            throw new ProductInvalidException("The Product price must be greater than 0!");
+        }
     }
 
-    public Predicate<Product> validateQuantity(){
-        return product -> product.getQuantity() >= 0;
+    public void validateQuantity(ProductRequestDTO productRequest){
+        if (productRequest.getQuantity() < 0){
+            throw new ProductInvalidException("The Quantity in stock must be greater than 0!!");
+        }
     }
 
 }
