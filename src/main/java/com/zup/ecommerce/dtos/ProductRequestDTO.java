@@ -1,7 +1,6 @@
 package com.zup.ecommerce.dtos;
 
 public class ProductRequestDTO {
-
     private String name;
     private double price;
     private int quantity;
@@ -9,7 +8,8 @@ public class ProductRequestDTO {
     public ProductRequestDTO() {
     }
 
-    public ProductRequestDTO(String name, double price, int quantity) {
+    public ProductRequestDTO( String name, double price, int quantity) {
+
         this.name = name;
         this.price = price;
         this.quantity = quantity;

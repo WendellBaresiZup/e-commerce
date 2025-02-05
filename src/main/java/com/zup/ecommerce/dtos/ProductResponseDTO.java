@@ -16,6 +16,7 @@ public class ProductResponseDTO {
         this.quantity = quantity;
     }
 
+
     public Long getId() {
         return id;
     }
