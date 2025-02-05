@@ -1,5 +1,6 @@
 package com.zup.ecommerce.controllers;
 
+import com.zup.ecommerce.dtos.CustomerResponseDTO;
 import com.zup.ecommerce.dtos.ProductRequestDTO;
 import com.zup.ecommerce.dtos.ProductResponseDTO;
 import com.zup.ecommerce.models.Product;
@@ -26,7 +27,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts(){
+    public ResponseEntity<List<ProductResponseDTO>> getAllProducts(){
         return ResponseEntity.ok(service.getAllProducts());
     }
 
