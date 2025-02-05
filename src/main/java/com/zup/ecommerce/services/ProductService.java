@@ -1,9 +1,14 @@
 package com.zup.ecommerce.services;
 
+import com.zup.ecommerce.dtos.CustomerRequestDTO;
+import com.zup.ecommerce.dtos.CustomerResponseDTO;
 import com.zup.ecommerce.dtos.ProductRequestDTO;
 import com.zup.ecommerce.dtos.ProductResponseDTO;
+import com.zup.ecommerce.exceptions.CustomerInvalidException;
+import com.zup.ecommerce.exceptions.CustomerNotFoundException;
 import com.zup.ecommerce.exceptions.ProductInvalidException;
 import com.zup.ecommerce.exceptions.ProductNotFoundException;
+import com.zup.ecommerce.models.Customer;
 import com.zup.ecommerce.models.Product;
 import com.zup.ecommerce.repository.ProductRepository;
 import org.springframework.http.HttpStatus;
@@ -40,8 +45,9 @@ public class ProductService {
         }
     }
 
-    public List<Product> getAllProducts(){
-        return productRepository.findAll().stream().map(product -> new Product(product.getId(), product.getName(), product.getPrice(), product.getQuantity() )).collect(Collectors.toList());
+    public List<ProductResponseDTO> getAllProducts(){
+        return productRepository.findAll().stream()
+                .map(product -> new ProductResponseDTO(product.getId(), product.getName(), product.getPrice(), product.getQuantity() )).collect(Collectors.toList());
     }
 
     public Product getProductById(Long id){
