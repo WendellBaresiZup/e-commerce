@@ -2,6 +2,7 @@ package com.zup.ecommerce.services;
 
 import com.zup.ecommerce.dtos.CustomerRequestDTO;
 import com.zup.ecommerce.dtos.CustomerResponseDTO;
+import com.zup.ecommerce.exceptions.CustomerInvalidException;
 import com.zup.ecommerce.models.Customer;
 import com.zup.ecommerce.models.Product;
 import com.zup.ecommerce.repository.CustomerRepository;
@@ -62,27 +63,27 @@ public class CustomerService {
 
     private void validateCustomerName(String name){
         if (name == null || name.isEmpty()){
-            throw new IllegalArgumentException("The Customer name cannot be empty!");
+            throw new CustomerInvalidException("The Customer name cannot be empty!");
         }
     }
 
     private void validateCustomerCpf(String cpf){
         String cpfPattern = "^[0-9]{11}$";
         if (cpf == null || !Pattern.matches(cpfPattern, cpf)){
-            throw new IllegalArgumentException("The Customer CPF must be a valid 11-digit number!");
+            throw new CustomerInvalidException("The Customer CPF must be a valid 11-digit number!");
         }
         if (repository.existsByCpf(cpf)){
-            throw new IllegalArgumentException("The Customer CPF already exists!");
+            throw new CustomerInvalidException("The Customer CPF already exists!");
         }
     }
 
     private void validateCustomerEmail(String email){
         String emailPattern = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-za-z]{2,6}$";
         if (email == null || !Pattern.matches(emailPattern, email)){
-            throw new IllegalArgumentException("The Customer email must be valid!");
+            throw new CustomerInvalidException("The Customer email must be valid!");
         }
         if (repository.existsByEmail(email)){
-            throw new IllegalArgumentException("The Customer email already exists!");
+            throw new CustomerInvalidException("The Customer email already exists!");
         }
     }
 
