@@ -64,7 +64,7 @@ public class BuyService {
                     .collect(Collectors.toList());
 
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (IllegalArgumentException e){
+        } catch (BuyInvalidException | BuyNotFoundException e){
             BuyResponseDTO errorBody = new BuyResponseDTO(e.getMessage(), null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody);
         }
