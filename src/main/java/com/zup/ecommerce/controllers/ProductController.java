@@ -1,5 +1,7 @@
 package com.zup.ecommerce.controllers;
 
+import com.zup.ecommerce.dtos.ProductRequestDTO;
+import com.zup.ecommerce.dtos.ProductResponseDTO;
 import com.zup.ecommerce.models.Product;
 import com.zup.ecommerce.services.ProductService;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,9 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createProduct(@RequestBody Product product){
-        ResponseEntity<Object> productCreated = service.createProduct(product);
-        return ResponseEntity.ok(productCreated);
+    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductRequestDTO productRequest){
+        ResponseEntity<ProductResponseDTO> productCreated = service.createProduct(productRequest);
+        return productCreated;
     }
 
     @GetMapping
