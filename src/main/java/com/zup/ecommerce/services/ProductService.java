@@ -55,10 +55,9 @@ public class ProductService {
         return new ProductResponseDTO(search.getId(), search.getName(), search.getPrice(), search.getQuantity());
     }
 
-    public ResponseEntity<Map<String, String>> deleteProduct(Long id){
+    public ResponseEntity<Void> deleteProduct(Long id){
         productRepository.deleteById(id);
-        Map<String, String> body = Map.of("Message", "Product Deleted Successfully");
-        return ResponseEntity.status(HttpStatus.OK).body(body);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public void validateProductName(ProductRequestDTO productRequest){
