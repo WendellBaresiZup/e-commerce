@@ -3,6 +3,7 @@ package com.zup.ecommerce.services;
 import com.zup.ecommerce.dtos.CustomerRequestDTO;
 import com.zup.ecommerce.dtos.CustomerResponseDTO;
 import com.zup.ecommerce.exceptions.CustomerInvalidException;
+import com.zup.ecommerce.exceptions.CustomerNotFoundException;
 import com.zup.ecommerce.models.Customer;
 import com.zup.ecommerce.models.Product;
 import com.zup.ecommerce.repository.CustomerRepository;
@@ -28,9 +29,9 @@ public class CustomerService {
             Customer customer = new Customer(null, customerRequest.getName(), customerRequest.getCpf(), customerRequest.getEmail());
             validateCustomer(customer);
             Customer saveCustomer = repository.save(customer);
-            CustomerResponseDTO bodyCustomer = new CustomerResponseDTO ("Customer Create succesfully!",saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail());
-            return ResponseEntity.status(HttpStatus.CREATED).body(bodyCustomer);
-        }catch (IllegalArgumentException e){
+
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }catch (CustomerInvalidException | CustomerNotFoundException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -43,7 +44,7 @@ public class CustomerService {
 
     public ResponseEntity<CustomerResponseDTO> updateCustomer(Long id, CustomerRequestDTO customerRequest){
         try {
-            Customer existingCustomer = repository.findById(id).orElseThrow(()-> new RuntimeException("Customer with ID " + id + " not found."));
+            Customer existingCustomer = repository.findById(id).orElseThrow(()-> new CustomerNotFoundException("Customer with ID " + id + " not found."));
             validateCustomerName(customerRequest.getName());
             validateCustomerCpf(customerRequest.getCpf());
             validateCustomerEmail(customerRequest.getEmail());
@@ -53,9 +54,9 @@ public class CustomerService {
             existingCustomer.setEmail(customerRequest.getEmail());
 
             Customer saveCustomer = repository.save(existingCustomer);
-            CustomerResponseDTO bodyCustomer = new CustomerResponseDTO ("Customer Update Sucessfully",saveCustomer.getId(), saveCustomer.getName(), saveCustomer.getCpf(), saveCustomer.getEmail());
-            return ResponseEntity.status(HttpStatus.OK).body(bodyCustomer);
-        } catch (IllegalArgumentException e){
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (CustomerInvalidException | CustomerNotFoundException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
