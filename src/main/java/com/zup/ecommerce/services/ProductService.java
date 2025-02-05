@@ -30,7 +30,6 @@ public class ProductService {
             validateProductName(productRequest);
             validateProductPrice(productRequest);
             validateProductQuantity(productRequest);
-
             Product product = new Product(null, productRequest.getName(), productRequest.getPrice(), productRequest.getQuantity());
             Product createProduct = productRepository.save(product);
 
